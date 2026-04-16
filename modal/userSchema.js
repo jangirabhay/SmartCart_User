@@ -26,7 +26,6 @@ const userSchema = new mongoose.Schema(
     district: { type: String },
     state: { type: String },
     shop_category: { type: [String] },
-    create_Date: { type: String },
     postlist: {
       ownpost: [post],
       otherpost: [post],
