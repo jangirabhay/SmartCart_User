@@ -10,7 +10,7 @@ const post = new mongoose.Schema({
   district: { type: String },
   state: { type: String },
   city: { type: String },
-  twon: { type: String },
+  town: { type: String },
   category: { type: String },
 });
 
