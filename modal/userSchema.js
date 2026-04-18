@@ -25,6 +25,8 @@ const userSchema = new mongoose.Schema(
     country: { type: String },
     district: { type: String },
     state: { type: String },
+    city: { type: String },
+    town: { type: String },
     shop_category: { type: [String] },
     postlist: {
       ownpost: [post],
