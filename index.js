@@ -11,6 +11,7 @@ app.use(express.json());
 connectDB();
 
 app.use("/user", require("./api/user"));
+app.use("/post", require("./api/request"));
 
 app.get("/", (req, res) => {
   res.json({ message: "API is running 🚀", status: "ok" });
