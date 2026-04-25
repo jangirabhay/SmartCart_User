@@ -1,10 +1,9 @@
-require("dotenv").config(); 
-
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const connectDB = require("./config/db");
-const app = express();
 
+const app = express();
 app.use(cors());
 app.use(express.json());
 
@@ -14,7 +13,6 @@ app.use("/user", require("./api/user"));
 app.use("/post", require("./api/request"));
 app.use("/client", require("./api/post"));
 
-
 app.get("/", (req, res) => {
   res.json({ message: "API is running 🚀", status: "ok" });
 });
@@ -23,8 +21,13 @@ app.use((req, res) => {
   res.status(404).json({ message: "Route not found" });
 });
 
-const PORTS = process.env.PORT || 8000;
+// ✅ Only listen locally, not on Vercel
+if (process.env.NODE_ENV !== "production") {
+  const PORT = process.env.PORT || 8000;
+  app.listen(PORT, () => {
+    console.log(`Server on booooom! Port ${PORT}`);
+  });
+}
 
-app.listen(PORTS, () => {
-  console.log("Server on booooom!");
-});
+// ✅ Required for Vercel
+module.exports = app;
