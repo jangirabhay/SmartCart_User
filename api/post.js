@@ -6,7 +6,6 @@ const admin = require("../firebase/firebaseAdmin");
 
 router.post("/createPost", async (req, res) => {
   try {
-    
     const newPost = new Post(req.body);
     await newPost.save();
 
@@ -20,8 +19,6 @@ router.post("/createPost", async (req, res) => {
     });
 
     if (matchUsers.length > 0) {
-      const matchedIds = matchUsers.map((user) => user._id);
-
       const tokens = matchUsers.map((user) => user.token).filter(Boolean);
 
       if (tokens.length > 0) {
@@ -33,7 +30,6 @@ router.post("/createPost", async (req, res) => {
           tokens,
         });
 
-        // ✅ Log failed tokens for debugging
         response.responses.forEach((resp, i) => {
           if (!resp.success) {
             console.error(`Token failed [${tokens[i]}]:`, resp.error);
@@ -42,9 +38,7 @@ router.post("/createPost", async (req, res) => {
       }
     }
 
-    res
-      .status(201)
-      .json({ message: "Post created successfully", post: newPost });
+    res.status(201).json({ message: "Post created successfully", post: newPost });
   } catch (error) {
     console.error("createPost error:", error);
     res.status(500).json({ error: "Internal server error" });
