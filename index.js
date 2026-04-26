@@ -11,7 +11,7 @@ connectDB();
 
 app.use("/user", require("./api/user"));
 app.use("/post", require("./api/request"));
-
+app.use("/client", require("./api/post"));
 
 app.get("/", (req, res) => {
   res.json({ message: "API is running 🚀", status: "ok" });
@@ -21,7 +21,7 @@ app.use((req, res) => {
   res.status(404).json({ message: "Route not found" });
 });
 
-// ✅ Only listen locally, not on Vercel
+
 if (process.env.NODE_ENV !== "production") {
   const PORT = process.env.PORT || 8000;
   app.listen(PORT, () => {
@@ -29,5 +29,5 @@ if (process.env.NODE_ENV !== "production") {
   });
 }
 
-// ✅ Required for Vercel
+
 module.exports = app;
