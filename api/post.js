@@ -33,7 +33,7 @@ router.post("/createPost", async (req, res) => {
           tokens,
         });
 
-        // ✅ Log failed tokens for debugging
+
         response.responses.forEach((resp, i) => {
           if (!resp.success) {
             console.error(`Token failed [${tokens[i]}]:`, resp.error);
