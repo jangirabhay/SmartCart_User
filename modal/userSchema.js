@@ -16,8 +16,7 @@ const post = new mongoose.Schema({
 
 const userSchema = new mongoose.Schema(
   {
-    name: { type: String },
-    surname: { type: String },
+    full_name: { type: String, },
     email: { type: String, unique: true },
     photo: { type: String },
     number: { type: Number },
@@ -27,10 +26,10 @@ const userSchema = new mongoose.Schema(
     state: { type: String },
     city: { type: String },
     town: { type: String },
+    role : {type: String},
     shop_category: { type: [String] },
     postlist: {
       ownpost: [post],
-      otherpost: [post],
     },
     list: {
       wishlist: [
