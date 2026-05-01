@@ -21,11 +21,12 @@ const userSchema = new mongoose.Schema(
     photo: { type: String },
     number: { type: Number },
     token: { type: String },
-    country: { type: String },
-    district: { type: String },
-    state: { type: String },
-    city: { type: String },
-    town: { type: String },
+    location_coordinate : {
+      longitude : {type:Number},
+      latitude : {type:Number},
+    },
+    shopName : {type : String},
+    display_location : {type : String},
     role : {type: String},
     shop_category: { type: [String] },
     postlist: {
