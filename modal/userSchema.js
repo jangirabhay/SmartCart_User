@@ -6,36 +6,29 @@ const post = new mongoose.Schema({
   product_name: { type: String },
   product_details: { type: String },
   deadline: { type: String },
-  country: { type: String },
-  district: { type: String },
-  state: { type: String },
-  city: { type: String },
-  town: { type: String },
   category: { type: String },
 });
 
 const userSchema = new mongoose.Schema(
   {
-    full_name: { type: String, },
-    email: { type: String, unique: true },
+    full_name: { type: String,  required: true},
+    email: { type: String, unique: true, required: true },
     photo: { type: String },
-    number: { type: Number },
-    token: { type: String },
+    number: { type: Number, required: true },
+    token: { type: String,},
     location_coordinate : {
       longitude : {type:Number},
       latitude : {type:Number},
     },
     shopName : {type : String},
     display_location : {type : String},
-    role : {type: String},
+    role : {type: String, required: true},
     shop_category: { type: [String] },
     postlist: {
       ownpost: [post],
     },
     list: {
-      wishlist: [
-
-      ],
+      wishlist: [],
     },
   },
   { timestamps: true },
