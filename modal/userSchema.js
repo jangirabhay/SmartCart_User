@@ -34,14 +34,7 @@ const userSchema = new mongoose.Schema(
     },
     list: {
       wishlist: [
-        {
-          image: { type: String },
-          id: { type: String },
-          price: { type: String },
-          category: { type: Object },
-          model: { type: String },
-          storage: { type: String },
-        },
+
       ],
     },
   },
