@@ -16,10 +16,7 @@ const userSchema = new mongoose.Schema(
     photo: { type: String },
     number: { type: Number, required: true },
     token: { type: String,},
-    location_coordinate : {
-      longitude : {type:Number},
-      latitude : {type:Number},
-    },
+    location_coordinate : {type: Object},
     shopName : {type : String},
     gender : {type : String, required: true},
     display_location : {type : String},
