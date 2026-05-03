@@ -21,6 +21,7 @@ const userSchema = new mongoose.Schema(
       latitude : {type:Number},
     },
     shopName : {type : String},
+    gender : {type : String, required: true},
     display_location : {type : String},
     role : {type: String, required: true},
     shop_category: { type: [String] },
