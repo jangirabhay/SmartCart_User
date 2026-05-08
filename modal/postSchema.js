@@ -7,7 +7,7 @@ const postSchema = new mongoose.Schema({
     productDetails: { type: String, required: true },
     productDescriptions: { type: String, required: true },
     location_coordinate: { type: Object },
-    display_location: { type: String },
+    streetAddress : { type: String },
     radiusSearch : {type:String,required:true},
    
     status: {
