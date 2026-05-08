@@ -8,7 +8,8 @@ const postSchema = new mongoose.Schema({
     productDescriptions: { type: String, required: true },
     location_coordinate: { type: Object },
     display_location: { type: String },
-
+    radiusSearch : {type:String,required:true},
+   
     status: {
         type: String,
         enum: ['pending', 'accepted', 'rejected', 'completed'],
