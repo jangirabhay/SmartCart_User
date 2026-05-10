@@ -4,7 +4,7 @@ const router = express.Router();
 const User = require("../modal/userSchema");
 
 // get
-router.get("/allDataUser", async (req, res) => {
+router.get("/getAll", async (req, res) => {
   try {
     const alluser = await User.find({});
     if (!alluser) {
