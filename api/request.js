@@ -1,19 +1,18 @@
 const express = require("express");
 const router = express.Router();
-
 const Post = require("../modal/postSchema");
 
-// router.post("/addPost", async (req, res) => {
-//   try {
-//     const newPost = new Post(req.body);
-//     await newPost.save();
-//     res.status(201).json({ message: "Post added successfully", post: newPost });
-//   } catch (error) {
-//     res
-//       .status(500)
-//       .json({ message: "Error adding post", error: error.message });
-//   }
-// });
+router.post("/createPost", async (req, res) => {
+  try {
+    const newPost = new Post(req.body);
+    await newPost.save();
+    res.status(201).json({ message: "Post added successfully", post: newPost });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error adding post", error: error.message });
+  }
+});
 
 router.get("/getPosts", async (req, res) => {
   try {
@@ -41,6 +40,15 @@ router.delete("/deleteRequest/:id", async (req, res) => {
     res
       .status(500)
       .json({ message: "Error deleting post", error: error.message });
+  }
+});
+
+router.delete("/clearPosts", async (req, res) => {
+  try {
+    await Post.deleteMany({});
+    res.json({ message: "All posts deleted" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 
