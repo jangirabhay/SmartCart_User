@@ -1,11 +1,8 @@
 const mongoose = require("mongoose");
 
 const postSchema = new mongoose.Schema({
-  createdBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
-  },
+  name: {type:String,required:true},
+  number: {type:Number,required:true},
   category: { type: String, required: true },
   productDetails: { type: String, required: true },
   productDescription: { type: String, required: true },
