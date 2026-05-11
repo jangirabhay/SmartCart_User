@@ -3,6 +3,12 @@ const mongoose = require("mongoose");
 const postSchema = new mongoose.Schema({
   name: {type:String,required:true},
   number: {type:Number,required:true},
+  token : {type:String,required:true},
+  customer_id : {
+     type: mongoose.Schema.Types.ObjectId,
+      ref: 'Customer',
+  default: null
+  }
   category: { type: String, required: true },
   productDetails: { type: String, required: true },
   productDescription: { type: String, required: true },
@@ -16,11 +22,11 @@ const postSchema = new mongoose.Schema({
     default: "pending",
   },
 
-  acceptedBy: {
-    sellerId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    acceptedAt: { type: Date },
-  },
-});
+seller_id: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: 'Seller',
+  default: null
+}});
 
 const Post = mongoose.model("Post", postSchema);
 
