@@ -12,9 +12,9 @@ const postSchema = new mongoose.Schema({
   category: { type: String, required: true },
   productDetails: { type: String, required: true },
   productDescription: { type: String, required: true },
-  location_coordinate: { type: Object },
-  display_location: { type: String },
-  radiusSearch: { type: Number },
+  location_coordinate: { type: Object,required:true },
+  display_location: { type: String,required:true },
+  radiusSearch: { type: Number,required:true },
 
   status: {
     type: String,
