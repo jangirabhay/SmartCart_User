@@ -8,7 +8,7 @@ const postSchema = new mongoose.Schema({
      type: mongoose.Schema.Types.ObjectId,
       ref: 'Customer',
   default: null
-  }
+  },
   category: { type: String, required: true },
   productDetails: { type: String, required: true },
   productDescription: { type: String, required: true },
