@@ -1,9 +1,7 @@
 const mongoose = require("mongoose");
 
 const postSchema = new mongoose.Schema({
-  name: {type:String,required:true},
-  number: {type:Number,required:true},
-  token : {type:String,required:true},
+
   customer_id : {
      type: mongoose.Schema.Types.ObjectId,
       ref: 'Customer',
