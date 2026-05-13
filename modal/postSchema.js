@@ -3,9 +3,7 @@ const mongoose = require("mongoose");
 const postSchema = new mongoose.Schema({
 
 customer_id: {
-  type: mongoose.Schema.Types.ObjectId,
-  ref: "User",
-  default: null,
+  type: String, required: true
 },
   category: { type: String, required: true },
   productDetails: { type: String, required: true },
@@ -21,9 +19,7 @@ customer_id: {
   },
 
 seller_id: {
-  type: mongoose.Schema.Types.ObjectId,
-  ref: "User",
-  default: null,
+  type: String, required: true
 },
   {
     timestamps: true,
