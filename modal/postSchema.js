@@ -2,10 +2,11 @@ const mongoose = require("mongoose");
 
 const postSchema = new mongoose.Schema({
 
-  customer_id : {
-   type:Object,
-  default: null
-  },
+customer_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+    },
   category: { type: String, required: true },
   productDetails: { type: String, required: true },
   productDescription: { type: String, required: true },
@@ -20,9 +21,14 @@ const postSchema = new mongoose.Schema({
   },
 
 seller_id: {
- type:Object,
-  default: null
-}
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+    },
+  },
+  {
+    timestamps: true,
+  
 });
 
 const Post = mongoose.model("Post", postSchema);
