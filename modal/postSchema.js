@@ -16,7 +16,8 @@ customer_id: { type: String},
     default: "pending",
   },
 
-seller_id: { type: String},
+seller_id: { type: String}
+},
   {
     timestamps: true,
 }
