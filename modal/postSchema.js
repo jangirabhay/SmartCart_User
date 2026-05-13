@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const postSchema = new mongoose.Schema({
 
-customer_id: { type: Object},
+customer_id: { type: Object,default : null},
   category: { type: String, required: true },
   productDetails: { type: String, required: true },
   productDescription: { type: String, required: true },
@@ -16,7 +16,7 @@ customer_id: { type: Object},
     default: "pending",
   },
 
-seller_id: { type: Object}
+seller_id: { type: Object,default : null}
 },
   {
     timestamps: true,
