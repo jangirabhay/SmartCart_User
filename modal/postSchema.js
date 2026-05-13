@@ -2,9 +2,7 @@ const mongoose = require("mongoose");
 
 const postSchema = new mongoose.Schema({
 
-customer_id: {
-  type: String, required: true
-},
+customer_id: { type: String},
   category: { type: String, required: true },
   productDetails: { type: String, required: true },
   productDescription: { type: String, required: true },
@@ -18,13 +16,11 @@ customer_id: {
     default: "pending",
   },
 
-seller_id: {
-  type: String, required: true
-},
+seller_id: { type: String},
   {
     timestamps: true,
-  
-});
+}
+);
 
 const Post = mongoose.model("Post", postSchema);
 
