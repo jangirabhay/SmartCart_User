@@ -28,6 +28,22 @@ router.get("/getPosts", async (req, res) => {
   }
 });
 
+router.patch("/updateRequest/:id", async (req, res) => {
+  try {
+    const updatePost = await Post.findByIdAndUpdate(
+      { _id: req.params.id },
+      { $set: req.body },
+      { new: true },
+    );
+    if (updatePost) {
+      return res.status(404).json({ meesage: "Post not found" });
+    }
+    return res.status(200).json({ message: "Post updated successfully" });
+  } catch (error) {
+    console.log({ Error: error });
+  }
+});
+
 router.delete("/deleteRequest/:id", async (req, res) => {
   try {
     const postId = req.params.id;
