@@ -1,13 +1,6 @@
 const mongoose = require("mongoose");
 
-const post = new mongoose.Schema({
-  user_name: { type: String },
-  user_number: { type: String },
-  product_name: { type: String },
-  product_details: { type: String },
-  deadline: { type: String },
-  category: { type: String },
-});
+
 
 const userSchema = new mongoose.Schema(
   {
@@ -22,12 +15,9 @@ const userSchema = new mongoose.Schema(
     display_location : {type : String},
     role : {type: String, required: true},
     shop_category: { type: [String] },
-    postlist: {
-      ownpost: [post],
-    },
-    list: {
+    ownPost : {type: [Object]},
+    clientPost : {type: [Object]},
       wishlist: [],
-    },
   },
   { timestamps: true },
 );
