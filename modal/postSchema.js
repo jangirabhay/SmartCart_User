@@ -3,6 +3,8 @@ const mongoose = require("mongoose");
 const postSchema = new mongoose.Schema({
 
 createdBy: { type: Object,default : null},
+  full_name : {type: String, required: true},
+  number : {type: String, required: true},
   category: { type: String, required: true },
   productDetails: { type: String, required: true },
   productDescription: { type: String, required: true },
