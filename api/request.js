@@ -18,7 +18,7 @@ router.get("/getPosts", async (req, res) => {
   try {
     const posts = await Post.find({});
     if (posts.length === 0) {
-      return res.status(404).json({ message: "No posts found" });
+      return res.status(404).json([]);
     }
     res.status(200).json(posts);
   } catch (error) {
