@@ -1,17 +1,20 @@
 const mongoose = require("mongoose");
 
+let isConnected = false;
+
 const connectDB = async () => {
+  if (isConnected) return; // reuse existing connection
+
   try {
-    const uri = process.env.MONGO_URI;
-    if (!uri) {
-      throw new Error(
-        "MONGO_URI is undefined! Check your .env file or dotenv loading.",
-      );
-    }
-    await mongoose.connect(uri);
-    console.log("Connected MongoDB");
+    const conn = await mongoose.connect(process.env.MONGO_URI, {
+      serverSelectionTimeoutMS: 10000,
+      socketTimeoutMS: 45000,
+    });
+    isConnected = true;
+    console.log(`Connected MongoDB: ${conn.connection.host}`);
   } catch (error) {
-    console.log({ Error: error });
+    console.error("MongoDB connection error:", error);
+    process.exit(1);
   }
 };
 
