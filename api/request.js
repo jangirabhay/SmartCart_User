@@ -28,6 +28,16 @@ router.get("/getPosts", async (req, res) => {
   }
 });
 
+router.get("/getRequest/:id", async (req, res) => {
+  try {
+    const getReq = await Post.findById({ _id: req.params.id });
+    if (!getReq) return res.status(404).json([]);
+    return res.status(200).json(getReq);
+  } catch (error) {
+    console.log({ Error: error });
+  }
+});
+
 router.patch("/updateRequest/:id", async (req, res) => {
   try {
     const updatePost = await Post.findByIdAndUpdate(
