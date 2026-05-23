@@ -1,25 +1,32 @@
 const mongoose = require("mongoose");
 
-const userSchema = new mongoose.Schema(
-  {
-    full_name: { type: String, required: true },
-    email: { type: String, unique: true, required: true },
-    photo: { type: String },
-    number: { type: Number, required: true },
-    token: { type: String },
-    location_coordinate: { type: Object },
-    shopName: { type: String },
-    gender: { type: String, required: true },
-    display_location: { type: String },
-    role: { type: String, required: true },
-    shop_category: { type: [String] },
-    ownpost: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
-    clientPost: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
-    wishlist: [],
+const postSchema = new mongoose.Schema({
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
   },
-  { timestamps: true },
-);
+   full_name : {type: String, required: true},
+  number : {type: String, required: true},
+  category: { type: String, required: true },
+  productDetails: { type: String, required: true },
+  productDescription: { type: String, required: true },
+  location_coordinate: { type: Object },
+  display_location: { type: String },
+  radiusSearch: { type: Number },
 
-const User = mongoose.model("User", userSchema);
+  status: {
+    type: String,
+    enum: ["pending", "accepted", "rejected", "completed"],
+    default: "pending",
+  },
 
-module.exports = User;
+  acceptedBy: {
+    sellerId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    acceptedAt: { type: Date },
+  },
+});
+
+const Post = mongoose.model("Post", postSchema);
+
+module.exports = Post;
