@@ -1,30 +1,25 @@
 const mongoose = require("mongoose");
 
-const postSchema = new mongoose.Schema({
-
-createdBy: { type: Object,default : null},
-  full_name : {type: String, required: true},
-  number : {type: String, required: true},
-  category: { type: String, required: true },
-  productDetails: { type: String, required: true },
-  productDescription: { type: String, required: true },
-  location_coordinate: { type: Object },
-  display_location: { type: String },
-  radiusSearch: { type: Number},
-
-  status: {
-    type: String,
-    enum: ["pending", "accepted", "rejected", "completed"],
-    default: "pending",
-  },
-
-acceptedBy: { type: Object,default : null}
-},
+const userSchema = new mongoose.Schema(
   {
-    timestamps: true,
-}
+    full_name: { type: String, required: true },
+    email: { type: String, unique: true, required: true },
+    photo: { type: String },
+    number: { type: Number, required: true },
+    token: { type: String },
+    location_coordinate: { type: Object },
+    shopName: { type: String },
+    gender: { type: String, required: true },
+    display_location: { type: String },
+    role: { type: String, required: true },
+    shop_category: { type: [String] },
+    ownpost: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
+    clientPost: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
+    wishlist: [],
+  },
+  { timestamps: true },
 );
 
-const Post = mongoose.model("Post", postSchema);
+const User = mongoose.model("User", userSchema);
 
-module.exports = Post;
+module.exports = User;
