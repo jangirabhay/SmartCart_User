@@ -151,18 +151,48 @@ router.post("/createPost", async (req, res) => {
   }
 });
 
-router.get("/getPosts", async (req, res) => {
-  try {
-    const posts = await Post.find({});
-    if (posts.length === 0) {
-      return res.status(404).json({ message: "No posts found" });
-    }
-    res.status(200).json(posts);
-  } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error retrieving posts", error: error.message });
+// router.get("/getPosts", async (req, res) => {
+//   try {
+//     const posts = await Post.find({});
+//     if (posts.length === 0) {
+//       return res.status(404).json({ message: "No posts found" });
+//     }
+//     res.status(200).json(posts);
+//   } catch (error) {
+//     res
+//       .status(500)
+//       .json({ message: "Error retrieving posts", error: error.message });
+//   }
+// });
+
+router.get("/getPosts/:seller", async (req, res) => {
+  const { shop_category, location_coordinate } = req.body;
+
+  const filterPost = await Post.find({ category: { $in: shop_category } });
+
+  if (filterPost.length === 0) {
+    return res.status(200).json([]);
   }
+
+  const nearbyCustomers = filterPost.filter((customer) => {
+    const customerLat = customer.location_coordinate.latitude;
+    const customerLng = customer.location_coordinate.longitude;
+
+    const dist = getDistanceKm(
+      location_coordinate.latitude,
+      location_coordinate.longitude,
+      customerLat,
+      customerLng
+    );
+
+    return dist <= customer.radiusSearch;
+  });
+
+  if (nearbyCustomers.length === 0) {
+    return res.status(200).json([]);
+  }
+
+  return res.status(200).json(nearbyCustomers);
 });
 
 router.get("/getRequest/:id", async (req, res) => {
