@@ -165,34 +165,69 @@ router.post("/createPost", async (req, res) => {
 //   }
 // });
 
-router.get("/getPosts/:seller", async (req, res) => {
-  const { shop_category, location_coordinate } = req.body;
+router.post("/getPosts", async (req, res) => {
+  try {
+    const { shop_category, location_coordinate } = req.body;
 
-  const filterPost = await Post.find({ category: { $in: shop_category } });
+    if (!shop_category || !Array.isArray(shop_category) || shop_category.length === 0) {
+      return res.status(400).json({ message: "shop_category must be a non-empty list" });
+    }
 
-  if (filterPost.length === 0) {
-    return res.status(200).json([]);
-  }
+    if (
+      !location_coordinate ||
+      !location_coordinate.latitude ||
+      !location_coordinate.longitude
+    ) {
+      return res.status(400).json({ message: "location_coordinate is required" });
+    }
 
-  const nearbyCustomers = filterPost.filter((customer) => {
-    const customerLat = customer.location_coordinate.latitude;
-    const customerLng = customer.location_coordinate.longitude;
+    const lat = parseFloat(location_coordinate.latitude);
+    const lng = parseFloat(location_coordinate.longitude);
 
-    const dist = getDistanceKm(
-      location_coordinate.latitude,
-      location_coordinate.longitude,
-      customerLat,
-      customerLng
+    if (isNaN(lat) || isNaN(lng)) {
+      return res.status(400).json({ message: "latitude and longitude must be valid numbers" });
+    }
+
+    const existingCategories = await Category.find({ name: { $in: shop_category } });
+    const existingCategoryNames = existingCategories.map((c) => c.name);
+
+    const invalidCategories = shop_category.filter(
+      (cat) => !existingCategoryNames.includes(cat)
     );
+    if (invalidCategories.length > 0) {
+      return res.status(404).json({
+        message: "Some categories do not exist",
+        invalid: invalidCategories,
+      });
+    }
 
-    return dist <= customer.radiusSearch;
-  });
+    const filterPost = await Post.find({ category: { $in: shop_category } });
 
-  if (nearbyCustomers.length === 0) {
-    return res.status(200).json([]);
+    if (filterPost.length === 0) {
+      return res.status(200).json([]);
+    }
+
+    const nearbyCustomers = filterPost.filter((customer) => {
+      const customerLat = customer.location_coordinate?.latitude;
+      const customerLng = customer.location_coordinate?.longitude;
+
+      if (!customerLat || !customerLng) return false;
+
+      const dist = getDistanceKm(lat, lng, customerLat, customerLng);
+
+      return dist <= customer.radiusSearch;
+    });
+
+    if (nearbyCustomers.length === 0) {
+      return res.status(200).json([]);
+    }
+
+    return res.status(200).json(nearbyCustomers);
+
+  } catch (error) {
+    console.error("getPosts error:", error);
+    return res.status(500).json({ message: "Internal server error" });
   }
-
-  return res.status(200).json(nearbyCustomers);
 });
 
 router.get("/getRequest/:id", async (req, res) => {
