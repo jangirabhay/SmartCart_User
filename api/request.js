@@ -163,7 +163,7 @@ router.post("/getPosts/:sellerId", async (req, res) => {
       return res.status(404).json({ message: "Seller not found" });
     }
 
-    const shop_category = seller.shop_category;
+    const shop_category = seller.shop;
     const lat = parseFloat(seller.location_coordinate.latitude);
     const lng = parseFloat(seller.location_coordinate.longitude);
 
