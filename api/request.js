@@ -79,8 +79,7 @@ router.post("/createPost", async (req, res) => {
       });
     }
 
-    // ── 5. Push post ID into each nearby seller's clientPost array
-    //       and collect FCM tokens — all in parallel
+
     const fcmTokens = [];
 
     await Promise.all(
@@ -114,7 +113,6 @@ router.post("/createPost", async (req, res) => {
         `✅ FCM sent: ${fcmResult.successCount} | ❌ Failed: ${fcmResult.failureCount}`,
       );
 
-      // ── 7. Auto clean up expired/invalid FCM tokens
       const deadTokenIds = [];
       fcmResult.responses.forEach((resp, i) => {
         if (!resp.success) {
@@ -151,54 +149,30 @@ router.post("/createPost", async (req, res) => {
   }
 });
 
-// router.get("/getPosts", async (req, res) => {
-//   try {
-//     const posts = await Post.find({});
-//     if (posts.length === 0) {
-//       return res.status(404).json({ message: "No posts found" });
-//     }
-//     res.status(200).json(posts);
-//   } catch (error) {
-//     res
-//       .status(500)
-//       .json({ message: "Error retrieving posts", error: error.message });
-//   }
-// });
-
-router.post("/getPosts", async (req, res) => {
+router.post("/getPosts/:sellerId", async (req, res) => {
   try {
-    const { shop_category, location_coordinate } = req.body;
+    const { sellerId } = req.params;
 
-    if (!shop_category || !Array.isArray(shop_category) || shop_category.length === 0) {
-      return res.status(400).json({ message: "shop_category must be a non-empty list" });
+    if (!sellerId) {
+      return res.status(400).json({ message: "sellerId is required" });
+    }
+    
+    const seller = await Seller.findById(sellerId);
+
+    if (!seller) {
+      return res.status(404).json({ message: "Seller not found" });
     }
 
-    if (
-      !location_coordinate ||
-      !location_coordinate.latitude ||
-      !location_coordinate.longitude
-    ) {
-      return res.status(400).json({ message: "location_coordinate is required" });
-    }
+    const shop_category = seller.shop_category;
+    const lat = parseFloat(seller.location_coordinate.latitude);
+    const lng = parseFloat(seller.location_coordinate.longitude);
 
-    const lat = parseFloat(location_coordinate.latitude);
-    const lng = parseFloat(location_coordinate.longitude);
+    if (!shop_category || shop_category.length === 0) {
+      return res.status(400).json({ message: "Seller has no shop categories" });
+    }
 
     if (isNaN(lat) || isNaN(lng)) {
-      return res.status(400).json({ message: "latitude and longitude must be valid numbers" });
-    }
-
-    const existingCategories = await Category.find({ name: { $in: shop_category } });
-    const existingCategoryNames = existingCategories.map((c) => c.name);
-
-    const invalidCategories = shop_category.filter(
-      (cat) => !existingCategoryNames.includes(cat)
-    );
-    if (invalidCategories.length > 0) {
-      return res.status(404).json({
-        message: "Some categories do not exist",
-        invalid: invalidCategories,
-      });
+      return res.status(400).json({ message: "Seller has invalid location" });
     }
 
     const filterPost = await Post.find({ category: { $in: shop_category } });
@@ -229,6 +203,7 @@ router.post("/getPosts", async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 });
+
 
 router.get("/getRequest/:id", async (req, res) => {
   try {
