@@ -16,6 +16,8 @@ const getDistanceKm = (lat1, lon1, lat2, lon2) => {
       Math.sin(dLon / 2);
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 };
+
+// this is basically use for this to find the all use accoridng the radius and then send notification 
 router.post("/createPost", async (req, res) => {
   try {
     const {
@@ -149,61 +151,48 @@ router.post("/createPost", async (req, res) => {
   }
 });
 
-router.post("/getPosts/:sellerId", async (req, res) => {
+// by accessing seller
+router.post("/getPosts", async (req, res) => {
+  const { shop_category, location_coordinate } = req.body;
+
+  if (!shop_category || !location_coordinate) {
+    return res.status(400).json({ error: "Missing required fields" });
+  }
+
   try {
-    const { sellerId } = req.params;
-
-    if (!sellerId) {
-      return res.status(400).json({ message: "sellerId is required" });
-    }
-    
-    const seller = await Seller.findById(sellerId);
-
-    if (!seller) {
-      return res.status(404).json({ message: "Seller not found" });
-    }
-
-    const shop_category = seller.shop;
-    const lat = parseFloat(seller.location_coordinate.latitude);
-    const lng = parseFloat(seller.location_coordinate.longitude);
-
-    if (!shop_category || shop_category.length === 0) {
-      return res.status(400).json({ message: "Seller has no shop categories" });
-    }
-
-    if (isNaN(lat) || isNaN(lng)) {
-      return res.status(400).json({ message: "Seller has invalid location" });
-    }
-
-    const filterPost = await Post.find({ category: { $in: shop_category } });
-
-    if (filterPost.length === 0) {
-      return res.status(200).json([]);
-    }
-
-    const nearbyCustomers = filterPost.filter((customer) => {
-      const customerLat = customer.location_coordinate?.latitude;
-      const customerLng = customer.location_coordinate?.longitude;
-
-      if (!customerLat || !customerLng) return false;
-
-      const dist = getDistanceKm(lat, lng, customerLat, customerLng);
-
-      return dist <= customer.radiusSearch;
+    // Filter by the category
+    const filteredPosts = await Post.find({
+      category: { $in: shop_category },
     });
 
-    if (nearbyCustomers.length === 0) {
+    if (filteredPosts.length === 0) {
       return res.status(200).json([]);
     }
 
-    return res.status(200).json(nearbyCustomers);
+    // Filter by distance
+    const nearbyPosts = filteredPosts.filter((post) => {
+      const postLat = post.location_coordinate.latitude;
+      const postLng = post.location_coordinate.longitude;
 
+      const dist = getDistanceKm(
+        postLat,
+        postLng,
+        location_coordinate.latitude,
+        location_coordinate.longitude
+      );
+
+      return dist <= post.radiusSearch;
+    });
+
+    return res.status(200).json(nearbyPosts);
   } catch (error) {
-    console.error("getPosts error:", error);
-    return res.status(500).json({ message: "Internal server error" });
+    console.error("Error fetching posts:", error);
+    return res.status(500).json({ error: "Internal server error" });
   }
 });
 
+
+// accessing by the id 
 
 router.get("/getRequest/:id", async (req, res) => {
   try {
@@ -214,6 +203,8 @@ router.get("/getRequest/:id", async (req, res) => {
     console.log({ Error: error });
   }
 });
+
+// update  by the id  
 router.patch("/updateRequest/:id", async (req, res) => {
   try {
     const updatePost = await Post.findByIdAndUpdate(
@@ -230,6 +221,7 @@ router.patch("/updateRequest/:id", async (req, res) => {
   }
 });
 
+// delete by the id 
 router.delete("/deleteRequest/:id", async (req, res) => {
   try {
     const postId = req.params.id;
@@ -242,15 +234,6 @@ router.delete("/deleteRequest/:id", async (req, res) => {
     res
       .status(500)
       .json({ message: "Error deleting post", error: error.message });
-  }
-});
-
-router.delete("/clearPosts", async (req, res) => {
-  try {
-    await Post.deleteMany({});
-    res.json({ message: "All posts deleted" });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
   }
 });
 
