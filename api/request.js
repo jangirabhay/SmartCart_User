@@ -191,9 +191,21 @@ router.post("/getPosts", async (req, res) => {
   }
 });
 
+// access post by the id 
+router.get("/getOwnPost/:id", async (req, res) => {
+  try {
+    const allPost = await Post.find({ createdBy: req.params.id });
+    if (!allPost) {
+      return res.status(200).json([]);
+    }
+    return res.status(200).json(allPost);
+  } catch (error) {
+    console.log({ Error: error });
+  }
+});
 
-// accessing by the id 
 
+// accessing by the id
 router.get("/getRequest/:id", async (req, res) => {
   try {
     const getReq = await Post.findById({ _id: req.params.id });
