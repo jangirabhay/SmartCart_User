@@ -25,8 +25,8 @@ const postSchema = new mongoose.Schema({
     sellerId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     acceptedAt: { type: Date },
   },
-   sellerName : {type: String },
-   sellerNumber : {type: String},
+   sellerName : {type: String,default : '' },
+   sellerNumber : {type: String, default : ''},
 });
 
 const Post = mongoose.model("Post", postSchema);
