@@ -27,6 +27,13 @@ const postSchema = new mongoose.Schema({
   },
    sellerName : {type: String,default : '' },
    sellerNumber : {type: String, default : ''},
+
+    expiresAt: {
+    type: Date,
+    default: Date.now,
+    expires: 60 * 60 * 24, // 24 hours
+  },
+
 });
 
 const Post = mongoose.model("Post", postSchema);
