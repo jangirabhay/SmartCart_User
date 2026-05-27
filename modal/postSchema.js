@@ -6,8 +6,8 @@ const postSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
-   full_name : {type: String, required: true},
-  number : {type: String, required: true},
+   customerName : {type: String, required: true},
+  customerNumber : {type: String, required: true},
   category: { type: String, required: true },
   productDetails: { type: String, required: true },
   productDescription: { type: String, required: true },
@@ -25,6 +25,8 @@ const postSchema = new mongoose.Schema({
     sellerId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     acceptedAt: { type: Date },
   },
+   sellerName : {type: String },
+   sellerNumber : {type: String},
 });
 
 const Post = mongoose.model("Post", postSchema);
