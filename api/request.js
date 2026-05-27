@@ -147,7 +147,7 @@ router.post("/createPost", async (req, res) => {
     console.error("createPost error:", error);
     res
       .status(500)
-      .json({ message: "Error adding post", error: error.message });
+      .json({ message: error: error.message });
   }
 });
 
