@@ -151,6 +151,62 @@ router.post("/createPost", async (req, res) => {
   }
 });
 
+// accepted Request by seller 
+router.post("/acceptRequest/:id", async (req, res) => {
+  try {
+    const updatePost = await Post.findByIdAndUpdate(
+      { _id: req.params.id },
+      { $set: req.body },
+      { new: true },
+    );
+
+    if (!updatePost) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    const customer = await User.findById(updatePost.createdBy);
+
+    if (customer?.token) {
+      const fcmMessage = {
+        notification: {
+          title: "Your Request has been Accepted! 🎉",
+          body: `A seller has accepted your ${updatePost.category} request.`,
+        },
+        data: {
+          postId: updatePost._id.toString(),
+          category: updatePost.category,
+          type: "REQUEST_ACCEPTED",
+        },
+        token: customer.token, 
+      };
+
+      try {
+        await admin.messaging().send(fcmMessage);
+        console.log("✅ FCM notification sent to customer");
+      } catch (fcmError) {
+        const code = fcmError?.errorInfo?.code;
+        if (
+          code === "messaging/invalid-registration-token" ||
+          code === "messaging/registration-token-not-registered"
+        ) {
+          await User.findByIdAndUpdate(customer._id, { $unset: { token: "" } });
+          console.log("🧹 Cleared dead customer token");
+        } else {
+          console.error("FCM error:", fcmError.message);
+        }
+      }
+    }
+
+    return res
+      .status(200)
+      .json({ message: "Post updated successfully", post: updatePost });
+  } catch (error) {
+    console.error("acceptRequest error:", error);
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
+  }
+});
 // by accessing seller
 router.post("/getPosts", async (req, res) => {
   const { shop_category, location_coordinate } = req.body;
